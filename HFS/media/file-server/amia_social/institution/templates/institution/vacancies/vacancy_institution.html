@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Вакансии отдела{% endblock %}
+{% block content %}
+    {% include 'social_profile/navbar.html' %}
+    <div class="container">
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <h4>{{ institution.institution_name }}</h4>
+                {{ institution.info_about }}<br><br>
+                <input type="hidden" id="institution_id" value="{{ institution.id }}">
+                <div>{% csrf_token %}
+                    {% if request.user.socialprofile in institution.subscribers.all %}
+                        <button class="btn btn-success" type="button" id="id_vacancy_subscribe" name="vacancy_subscribe"  value="1" disabled>
+                            <i class="fas fa-bell"></i> Отписаться от получения информации о новых вакансиях
+                        </button>
+                    {% else %}
+                        <button class="btn btn-secondary" type="button" id="id_vacancy_subscribe" name="vacancy_subscribe"  value="-1" disabled>
+                            <i class="fas fa-bell"></i> Подписаться на получение информации о новых вакансиях
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    {% for vacancy in institution.vacancy_set.all %}
+                        <li class="media">
+                            <img src="" class="mr-3" alt="vacancy_logo">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">{{ vacancy.vacancy }}</h5>
+                                {{ vacancy.description }}<br><small>Дата открытия вакансии - {{ vacancy.date_added }}</small><br><br>
+                                <div>
+                                    {% if request.user.socialprofile in vacancy.responded.all %}
+                                        <button class="btn btn-success vacancy_respond" type="button" id="id_vacancy_respond" name="vacancy_respond" data-VacancyId="{{ vacancy.id }}" value="1" disabled>
+                                            <i class="fas fa-bell"></i> Вы откликнулись на эту вакансию
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-secondary vacancy_respond" type="button" id="id_vacancy_respond" name="vacancy_respond" data-VacancyId="{{ vacancy.id }}" value="-1" disabled>
+                                            <i class="fas fa-bell"></i> Откликнуться на вакансию
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li><br>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'institution/js/vacancy_subscription.js' %}"></script>
+    <script src="{% static 'institution/js/vacancy_response.js' %}"></script>
+{% endblock %}

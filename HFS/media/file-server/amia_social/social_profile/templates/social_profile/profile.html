@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+
+    {% if request.user.is_staff %}
+        {% include 'hr/navbar_hr.html' %}
+    {% else %}
+        {% include "social_profile/navbar.html" %}
+    {% endif %}
+
+    <br>
+    <div class="container">{% csrf_token %}
+    <input type="hidden" value="{{ profile.id }}" id="profile_id">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                {% if profile.profile_img %}
+                                    <img src="{{ profile.profile_img.url }}" alt="profile_image" class="img-thumbnail" width="200">
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-8">
+                                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalMessage" class="far fa-comments">
+                                    <i class="far fa-comments"></i> Написать сообщение
+                                </button><br><br>
+                                <div>
+                                    <i></i><b><h4>{{ profile.last_name }} {{ profile.first_name }}</h4></b>
+                                    <i class="fas fa-mobile"></i> {{ profile.contact_information_phone|default:"Нет данных" }}<br>
+                                    <i class="fas fa-map-marker-alt"></i> {{ profile.contact_information_address|default:"Нет данных" }}<br><br>
+                                    <b>{{ profile.about_myself|default:"Нет данных" }}</b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-university"></i> Образование</h5>
+                        {% for education in profile.educationwithinfo_set.all %}
+                            {{ education.education }} {{ education.year_of_entrance }} - {{ education.year_of_graduating }}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+                <br>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-briefcase"></i> Опыт работы</h5>
+                        {% for w_e in profile.work_experience.all %}
+                            {{ w_e.company_name }} {{ w_e.year_start }} - {{ w_e.year_end }}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+                <br>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-thumbs-up"></i> Навыки</h5>
+                        {% for skill in profile.skills.all %}
+                            {{ skill }},
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-thumbs-up"></i> Знание иностранных языков</h5>
+                        {% for lang in profile.languagewithlevel_set.all %}
+                            {{ lang.language }}: Level - {{ lang.level }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    {% include 'messaging/message_modal_window.html' %}
+{% endblock %}
+{% block js %}
+    <script src="{% static 'messaging/js/message_send_modal_window.js' %}"></script>
+{% endblock %}

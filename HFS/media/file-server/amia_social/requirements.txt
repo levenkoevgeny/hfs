@@ -1,0 +1,9 @@
+Django
+wheel
+channels
+Pillow==2.2.1
+django-filter
+django-widget-tweaks
+celery
+channels_redis
+django-celery-results

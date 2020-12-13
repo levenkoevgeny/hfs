@@ -1,0 +1,33 @@
+{% load widget_tweaks %}
+<div class="container">
+    <form action="{% url 'hr:profiles' %}" method="get">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Навыки</label>
+                    {% render_field filter.form.skills class+="form-control select2_class" style="width: 100%" %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Иностранный язык</label>
+                    {% render_field filter.form.language class+="form-control select2_class" style="width: 100%" %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Уровень владения иностранным языком</label>
+                    {% render_field filter.form.language_level class+="form-control select2_class" style="width: 100%" %}
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Поиск</button>&nbsp;&nbsp;<a href="{% url 'hr:profiles' %}" class="btn btn-primary">Сбросить фильтр</a>
+    </form>
+</div>
+
+
+
+

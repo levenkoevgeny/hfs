@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Вакансии{% endblock %}
+
+{% block content %}
+    {% include 'hr/navbar_hr.html' %}<br>
+    <div class="container">
+
+        {% include 'institution/vacancies/search_form.html' %}<br>
+        <br>
+        <a href="{% url 'institution:vacancy_add' %}" class="btn btn-light"><i class="fas fa-plus-circle"></i> Добавить вакансию</a><br><br>
+        <div class="row">
+            <div class="col-lg-12">
+
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Вакансия</th>
+                        <th scope="col">Отдел</th>
+                        <th scope="col">Откликнулось</th>
+                        <th scope="col">Редактирование</th>
+                        <th scope="col">Удаление</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for vacancy in vacancies %}
+                        <tr>
+                            <td>{{ vacancy.vacancy }}</td>
+                            <td>{{ vacancy.institution.institution_name }}</td>
+                            <td data-VacancyId="{{ vacancy.id }}">{{ vacancy.responded.count }}</td>
+                            <td><a href="{% url 'institution:vacancy_update' vacancy.id %}" class="btn btn-light"><i class="fas fa-cog"></i></a></td>
+                            <td><a href="{% url 'institution:vacancy_delete' vacancy.id %}" class="btn btn-light"><i class="fas fa-trash"></i></a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% include 'hr/toast.html' %}
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'hr/js/HR_web_socket.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %}Интерес{% endblock %}
+{% block content %}
+    <div class="container">
+        <form action="" method="post">{% csrf_token %}
+            <br>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>Введите новый интерес</label>
+                        {% render_field form.interest_name|attr:"required:required" class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="interest_add">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'social_profile/js/interest_ajax.js' %}"></script>
+{% endblock %}

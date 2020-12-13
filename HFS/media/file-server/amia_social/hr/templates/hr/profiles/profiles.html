@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Профили{% endblock %}
+{% block content %}
+
+    {% include 'hr/navbar_hr.html' %}<br>
+    <div class="container-fluid">
+        {% include 'hr/profiles/search_form.html' %}<br>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Фамилия</th>
+                        <th scope="col">Имя</th>
+                        <th scope="col">Дата рождения</th>
+                        <th scope="col">Опыт работы</th>
+                        <th scope="col">Навыки</th>
+                        <th scope="col">Интересы</th>
+                        <th scope="col">Контактная информация</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for profile in profiles %}
+                        <tr>
+                            <td><a href="{% url 'profile:profile_data' profile.id %}">{{ profile.last_name }}</a></td>
+                            <td>{{ profile.first_name|default:"Нет данных" }}</td>
+                            <td>
+                                {% if profile.date_of_birth %}
+                                    <i class="fas fa-calendar-alt"></i>
+                                {% endif %}
+                                {{ profile.date_of_birth|default:"Нет данных" }}</td>
+                            <td>
+                                {% for w_e in profile.work_experience.all %}
+                                    <nobr><i class="fas fa-briefcase"></i> {{ w_e }}</nobr><br>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if profile.skills.all %}
+                                    <i class="fas fa-thumbs-up"></i>
+                                {% endif %}
+                                {% for skill in profile.skills.all %}
+                                    <nobr> {{ skill }}</nobr>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% for interest in profile.interests.all %}
+                                    <nobr>{{ interest }}</nobr>,
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <i class="fas fa-mobile"></i> {{ profile.contact_information_phone|default:"Нет данных" }}<br>
+                                <i class="fas fa-map-marker-alt"></i> {{ profile.contact_information_address|default:"Нет данных" }}
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}{% endblock %}

@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %}Редактирование профиля{% endblock %}
+
+{% block content %}
+    {% if request.user.is_staff %}
+        {% include 'hr/navbar_hr.html' %}
+    {% else %}
+        {% include "social_profile/navbar.html" %}
+    {% endif %}
+    <div class="container">
+        <br>
+
+        <div class="card">
+            <div class="card-body">
+                <form enctype="multipart/form-data" id="profile_image_form" action="{% url 'profile:profile_image_update' %}" method="POST">{% csrf_token %}
+                    {% if obj.profile_img %}
+                        <img src="{{ obj.profile_img.url }}" alt="profile_image" class="img-thumbnail" width="200">
+                    {% endif %}
+                    <input type="file" id="profile_image" name="profile_image" data-input="false" data-buttonText="Your label here."></input>
+                    <input type="submit" value="Сохранить">
+                </form>
+            </div>
+        </div><br>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-end align-items-center"><b>Персональные данные</b>&nbsp;
+                    <a class="btn btn-light" onclick="window.open('{% url 'profile:profile_update_personal_data' obj.id %}','popup','width=1000,height=500'); return false;"><i class="fas fa-pencil-alt"></i></a>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Фамилия</label>
+                            <b>{{ obj.last_name }}</b>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Имя</label>
+                            <b>{{ obj.first_name }}</b>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Отчество</label>
+                            <b>{{ obj.patronymic }}</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <b>{{ obj.email }}</b>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label>Дата рождения</label>
+                            <b>{{ obj.date_of_birth }}</b>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>О себе</label>
+                            <b>{{ obj.about_myself }}</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Контактный телефон</label>
+                            <b>{{ obj.contact_information_phone }}</b>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="form-group">
+                            <label>Адрес</label>
+                            <b>{{ obj.contact_information_address }}</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><br>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-end align-items-center"><b>Образование</b>&nbsp;
+                    <a class="btn btn-light" onclick="window.open('{% url 'profile:profile_education_add' %}','popup','width=1000,height=300'); return false;"><i class="fas fa-plus"></i></a>
+                </div>
+                <div class="row">
+
+                    {% for educat in obj.educationwithinfo_set.all %}
+                        <div class="col-lg-10">
+                            Учебное заведение - {{ educat.specialty.education }}<br>
+                            Специальность - {{ educat.specialty.specialty_name }}<br>
+                            Год поступления - {{ educat.year_of_entrance }}<br>
+                            Год поступления - {{ educat.year_of_graduating|default:"Не окончил" }}
+                            <div class="dropdown-divider"></div>
+                        </div>
+                        <div class="col-lg-2 d-flex justify-content-center align-items-center">
+                            <button class="btn btn-light education_delete_button" type="button" id="id_education_delete_button{{ educat.id }}" value="{{ educat.id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div><br>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-end align-items-center"><b>Опыт работы</b>&nbsp;
+                    <a class="btn btn-light" onclick="window.open('{% url 'profile:profile_work_experience_add' %}','popup','width=1000,height=400'); return false;"><i class="fas fa-plus"></i></a>
+                </div>
+                <div class="row">
+                    {% for w_e in obj.work_experience.all %}
+                        <div class="col-lg-10">
+                            Название компании - {{ w_e.company_name }}<br>
+                            Должность - {{ w_e.position }}<br>
+                            Основные обязанности - {{ w_e.duty }}<br>
+                            Год начала работы - {{ w_e.year_start }}<br>
+                            Год окончания работы - {{ w_e.year_end|default:"Работаю в данный момент" }}
+                            <div class="dropdown-divider"></div>
+                        </div>
+                        <div class="col-lg-2 d-flex justify-content-center align-items-center">
+                            <button class="btn btn-light w_e_delete_button" type="button" id="id_w_e_delete_button{{ w_e.id }}" value="{{ w_e.id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div><br>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-end align-items-center"><b>Интересы</b>&nbsp;
+                    <a class="btn btn-light" onclick="window.open('{% url 'profile:profile_interest_add' %}','popup','width=500,height=200'); return false;"><i class="fas fa-plus"></i></a>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Выберите из списка</label>
+                            {% render_field form.interests class+="form-control select2_class" rows="3" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><br>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-end align-items-center"><b>Навыки</b>&nbsp;
+                    <a class="btn btn-light" onclick="window.open('{% url 'profile:profile_skill_add' %}','popup','width=500,height=200'); return false;"><i class="fas fa-plus"></i></a>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label>Выберите из списка</label>
+                            {% render_field form.skills class+="form-control select2_class" rows="3" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><br>
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-end align-items-center"><b>Владение языками</b>&nbsp;
+                    <a class="btn btn-light" onclick="window.open('{% url 'profile:profile_language_add' %}','popup','width=500,height=300'); return false;"><i class="fas fa-plus"></i></a>
+                </div>
+                <div class="row">
+                    {% for lang in obj.languagewithlevel_set.all %}
+                        <div class="col-lg-10">
+                            Язык - {{ lang.language }}
+                            Уровень - {{ lang.level }}<br>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                        <div class="col-lg-2 d-flex justify-content-center align-items-center">
+                            <button class="btn btn-light lang_delete_button" type="button" id="id_lang_delete_button{{ lang.id }}" value="{{ lang.id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div><br>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'social_profile/js/education_ajax.js' %}"></script>
+    <script src="{% static 'social_profile/js/work_experience.js' %}"></script>
+    <script src="{% static 'social_profile/js/language_ajax.js' %}"></script>
+    <script src="{% static 'social_profile/js/profile_image.js' %}"></script>
+{% endblock %}
+
+

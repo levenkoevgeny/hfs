@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %}Навык{% endblock %}
+{% block content %}
+    <div class="container">
+        <form action="" method="post">{% csrf_token %}
+            <br>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="form-group">
+                        <label>Введите новый навык</label>
+                        {% render_field form.skill_name|attr:"required:required" class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="skill_add">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'social_profile/js/skill_ajax.js' %}"></script>
+{% endblock %}

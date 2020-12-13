@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+    {% include 'hr/navbar_hr.html' %}
+
+    {% block title %}Новая вакансия{% endblock %}
+
+    <div class="container">
+        <br>
+        {% block form_title %}
+            <form action="{% url 'institution:vacancy_add' %}" method="POST">{% csrf_token %}
+        {% endblock %}
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Подразделение</label>
+                    {% render_field form.institution|append_attr:"required:required" class+="form-control select2_class" %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Вакансия</label>
+                    {% render_field form.vacancy|append_attr:"required:required" class+="form-control" %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Кто добавил</label>
+                    {% render_field form.who_added|append_attr:"required:required" class+="form-control select2_class" %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Описание</label>
+                    {% render_field form.description class+="form-control" rows=3 %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Статус</label>
+                    {% render_field form.status|append_attr:"required:required" class+="form-control" %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Необходимые навыки</label>
+                    {% render_field form.skills class+="form-control select2_class" %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label>Требуемые знания иностранного языка</label>
+                    {% render_field form_language.language class+="form-control select2_class" %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label>Требуемые уровень иностранного языка</label>
+                    {% render_field form_language.level class+="form-control select2_class" %}
+                </div>
+            </div>
+        </div>
+        {% block button %}
+            <button type="submit" class="btn btn-primary">Добавить!</button>
+        {% endblock %}
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block title %}Иностранный язык{% endblock %}
+{% block content %}
+    <div class="container">
+        <form action="" method="post">{% csrf_token %}
+            <br>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Выберите язык</label>
+                        {% render_field form.language|attr:"required:required" class+="form-control" %}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label>Выберите уровень владения</label>
+                        {% render_field form.level|attr:"required:required" class+="form-control" %}
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="language_add">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'social_profile/js/language_ajax.js' %}"></script>
+{% endblock %}

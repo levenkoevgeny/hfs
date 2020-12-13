@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% load static %}
+
+{% block title %}Поиск вакансии{% endblock %}
+
+{% block content %}
+
+    {% include 'social_profile/navbar.html' %}
+    <br>
+    <div class="container-fluid">
+
+        <div class="row">
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            {% for inst in institutions %}
+                                <li class="media">
+                                    {% if inst.img %}
+                                        <img src="{{ inst.img.url }}" class="mr-3" alt="institution_image" style="width: 100px;">
+                                    {% endif %}
+                                    <div class="media-body">
+                                        <h5 class="mt-0 mb-1">{{ inst.institution_name }}
+                                            <a href="{% url 'institution:institution_vacancy' inst.id %}" class="badge badge-dark">{{ inst.vacancy_set.all.count }}</a>
+                                        </h5>
+                                        {{ inst.info_about }}
+                                    </div>
+                                </li><br>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{% url 'institution:search' %}" method="get">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Название отдела</label>
+                                        {% render_field filter.form.institution class+="form-control select2_class" style="width: 100%" %}
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Ключевое слово в названии вакансии</label>
+                                        {% render_field filter.form.vacancy class+="form-control" style="width: 100%" %}
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Поиск</button>&nbsp;&nbsp;<a href="{% url 'institution:search' %}" class="btn btn-primary">Сбросить фильтр</a>
+                        </form>
+                    </div>
+                </div><br>
+                <div class="card">
+                    <div class="card-body">
+                        {% if vacancies_search %}
+                            {% for vac in vacancies_search %}
+                                <p>
+                                    <a class="" data-toggle="collapse" href="#collapseExample{{ vac.id }}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        <b>{{ vac.vacancy }}</b>
+                                    </a> {{ vac.institution }}&nbsp;&nbsp;
+
+
+                                    {% if request.user.socialprofile in vac.responded.all %}
+                                        <button class="btn btn-success vacancy_respond btn-sm" type="button" id="id_vacancy_respond" name="vacancy_respond" data-VacancyId="{{ vac.id }}" value="1" disabled>
+                                            <i class="fas fa-bell"></i> Вы откликнулись на эту вакансию
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-secondary vacancy_respond btn-sm" type="button" id="id_vacancy_respond" name="vacancy_respond" data-VacancyId="{{ vac.id }}" value="-1" disabled>
+                                            <i class="fas fa-bell"></i> Откликнуться на вакансию
+                                        </button>
+                                    {% endif %}
+                                </p>
+                                <div class="collapse" id="collapseExample{{ vac.id }}">
+                                    <div class="card card-body">
+                                        {{ vac.description }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            По вашему запросу ничего не найдено
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+                <div class="card">
+                    <div class="card-body">
+                        <b>Последние добавленные вакансии:</b><br>
+                        {% for vacancy in vacancies %}
+                            Подразделение - {{ vacancy.institution }}<br>
+                            Вакансия - {{ vacancy }} Добавлена - {{ vacancy.date_added }}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    {#    <script>#}
+    {#        $(document).ready(function() {#}
+    {#            $('#id_institution').select2();#}
+    {#        });#}
+    {#    </script>#}
+    <script src="{% static 'institution/js/vacancy_subscription.js' %}"></script>
+    <script src="{% static 'institution/js/vacancy_response.js' %}"></script>
+{% endblock %}

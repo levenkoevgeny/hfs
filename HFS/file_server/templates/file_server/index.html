@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}HFS{% endblock %}
+{% block content %}
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/file-server">
+                <img src="" alt="" width="30" height="24"> AMIA-HFS
+            </a>
+        </div>
+    </nav>
+    <br>
+
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% if breadcrumbs %}
+                    {% for breadcrumb in breadcrumbs|slice:":-1" %}
+                        <li class="breadcrumb-item"><a href="/{{ breadcrumb.breadcrumb_path }}">{{ breadcrumb.breadcrumb_name }}</a></li>
+                    {% endfor %}
+                    <li class="breadcrumb-item active">{{ breadcrumbs|last }}</li>
+                {% else %}
+                     <li class="breadcrumb-item active">Home</li>
+                {% endif %}
+
+            </ol>
+        </nav>
+        <br>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Название папки/файла</th>
+                <th scope="col">Размер</th>
+                <th scope="col">Дата создания</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in items_list %}
+                <tr>
+                    <td>
+                        {% if item.is_directory %}
+                            <a href="{{ item.full_name }}/" class="btn btn-link" style="text-decoration: none;">
+                                <i class="fa fa-folder" aria-hidden="true"></i>
+                                {{ item.full_name }}</a>
+                        {% else %}
+                            <a href="/media/{{ item.file_related_path }}/{{ item.full_name }}" class="btn btn-link" style="text-decoration: none;" download>
+                                {{ item.full_name }}</a>
+                        {% endif %}
+                    </td>
+                    <td>{{ item.size }}</td>
+                    <td>{{ item.create_time }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+{#    <a href="/media/2.jpg" download>Link</a>#}
+
+
+
+    </div>
+{% endblock %}
